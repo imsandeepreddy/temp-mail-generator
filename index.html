@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Email generator</title>
+    <!-- Add some CSS to change client UI -->
+    <style>
+    
+    label, button {
+        color: #FF9900;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        margin-left: 40px;
+        }
+     input {
+        color: #232F3E;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        margin-left: 20px;
+        }
+    </style>
+    <script>
+        // define the callAPI function that takes an email and token as parameters
+        var callAPI = ()=>{
+            // instantiate a headers object
+            var myHeaders = new Headers();
+            // add content type header to object
+            myHeaders.append("Content-Type", "application/json");
+            // using built in JSON utility package turn object to string and store in a variable
+            var raw = JSON.stringify({"key1":"value1","key2":"value2"});
+            // create a JSON object with parameters for API call and store in a variable
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+            // make API call with parameters and use promises to get response
+            fetch("API_INVOKE_URL", requestOptions)
+            .then(response => response.text())
+            .then(result => document.getElementById('output').innerHTML = JSON.parse(result).body)
+            .catch(error => console.log('error', error));
+        }
+       var callAPIforEmailBody = (email) => {
+            // instantiate a headers object
+            var myHeaders = new Headers();
+            // add content type header to object
+            myHeaders.append("Content-Type", "application/json");
+            // create a JSON object with the email address as a parameter
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: JSON.stringify({ "email": email }),
+                redirect: 'follow'
+            };
+            // make API call with parameters and use promises to get response
+            fetch("API_INVOKE_URL", requestOptions)
+                .then(response => response.text())
+                .then(result => document.getElementById('output2').innerHTML = JSON.parse(result).body)
+                .catch(error => console.log('error', error));
+        }
+    </script>
+</head>
+<body>
+    <form>
+        <!-- set button onClick method to call function we defined passing input values as parameters -->
+        <button type="button" onclick="callAPI()">Generate Email</button>
+    </form>
+    <div id="output"></div>
+        <form>
+        <label>Email Address :</label>
+        <input type="text" id="email">
+        <!-- set button onClick method to call function we defined passing input value as parameter -->
+        <button type="button" onclick="callAPIforEmailBody(document.getElementById('email').value)">Get Email Messages</button>
+    </form>
+    <div id="output2"></div>
+</body>
+</html>
